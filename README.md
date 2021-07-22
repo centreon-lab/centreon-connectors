@@ -70,27 +70,82 @@ or [Centreon Connector SSH](http://documentation.centreon.com/docs/centreon-ssh-
 Centreon Connectors need Centreon Clib to be build. You should
 [install it first](https://github.com/centreon/centreon-clib).
 
-Once the sources of Centreon Connectors extracted you should build each
-project independently by going to its *build/* directory and launching
-the CMake command. This will look for required dependencies and print a
-summary of the compilation parameters if everything went fine. The
-example below is for Centreon Connector Perl but works all the same for
-any other Connector.
+### CentOS / Debian / Raspbian
 
-    $> cd centreon-connector/perl/build
-    $> cmake .
-    ...
+Compilation of this distribution is pretty straightforward.
+
+You'll need to download the project and launch the *cmake.sh* script
+to prepare the compilation environment:
+
+```shell
+git clone https://github.com/centreon/centreon-connectors
+cd centreon-connectors
+./cmake.sh
+```
 
 Now launch the compilation using the *make* command and then install the
-software by running *make install* as priviledged user.
+software by running *make install* as priviledged user:
 
-    $> make -j 4
-    ...
-    $# make install
+```shell
+cd build
+make
+make install
+```
 
-You're done !
+### Other distributions
 
-## Bug reports / Feature requests ##
+If you are on another distribution, then follow the steps below.
+
+Check if you have these packages installed (Note that packages names
+come from CentOS distributions, so if some packages names don't match
+on your distribution try to find their equivalent names): git, make,
+cmake, gcc-c++.
+
+For the projet compilation you need to have conan installed. Try to use
+the package manager given by your OS to install conan. ('apt' for
+Debian, 'rpm' for Red Hat, 'pacman' for Arch Linux, ...). It is prefered
+to install gcc before conan.
+
+Example:
+
+```shell
+apt install conan
+```
+
+If it does not work, conan can be installed with pip3:
+
+```shell
+pip3 install conan
+```
+
+> All the dependencies pulled by conan are located in conanfile.txt. If
+> you want to use a dependency from your package manager instead of conan,
+> you need to remove it from conanfile.txt.
+
+You can now prepare the compilation environment:
+
+```shell
+git clone https://github.com/centreon/centreon-connectors
+mkdir -p centreon-connectors/build
+cd centreon-connectors/build
+conan install --build missing ..
+cmake -DCMAKE_BUILD_TYPE=Release -DWITH_PREFIX_BINARY=/usr/lib64/centreon-connector -DWITH_TESTING=On ..
+```
+
+This will look for required dependencies and print a summary of the
+compilation parameters if everything went fine.
+
+Now launch the compilation using the *make* command and then install the
+software by running *make install* as priviledged user:
+
+```shell
+make
+make install
+```
+
+You're done!
+
+## Bug reports / Feature requests
 
 The best way to report a bug or to request a feature is to open an issue
 in GitHub's [issue tracker](https://github.com/centreon/centreon-connectors/issues/).
